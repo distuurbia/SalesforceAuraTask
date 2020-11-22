@@ -1,0 +1,43 @@
+<aura:component access="global" implements="force:appHostable" controller="ContactsController">
+    
+
+    <aura:attribute name="contacts" type="List" default=""/>
+    <aura:attribute name="query" type="String" default=""/>
+    <aura:attribute name="pageNum" type="Integer" default="1"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="isNextEmpty" type="Boolean"  default="true"/>
+    <aura:attribute name="sortedBy" type="String" default="FirstName"/>
+    <aura:attribute name="sortedDirection" type="String" default="asc"/>
+
+    <aura:handler  name="init" value="{!this}" action="{!c.init}"/>
+
+    <c:contactCreatePopup/>
+
+    <lightning:card title="Search for contacts">
+
+      <lightning:input name="contactName" class="textInput" value="{! v.query }" label="Enter Contact name"/>
+
+      <lightning:button aura:id="find" label="Find" class="researchButton"
+                        variant="brand" onclick="{!c.submitContactName}"/>
+    </lightning:card>
+
+    <aura:if isTrue="{!v.contacts.size > 0}">
+      Don't have items to display
+      <aura:set attribute="else">
+        <lightning:datatable data="{!v.contacts}"
+                        columns="{!v.columns}"
+                        keyField="Id"
+                        hideCheckboxColumn="true"
+                        showRowNumberColumn="false"
+                        onrowaction="{!c.deleteContactById}"
+                        onsort="{!c.updateColumnSorting}"
+                        sortedBy="{!v.sortedBy}"  
+                        sortedDirection="{!v.sortedDirection}"/>
+      </aura:set>
+    </aura:if> 
+
+    <lightning:button label="Previous" disabled="{!v.pageNum == 1}"  onclick="{!c.handlePrevious}" />
+
+    <lightning:button label="Next" disabled="{! v.isNextEmpty}" onclick="{!c.handleNext}" />
+
+  </aura:component>
