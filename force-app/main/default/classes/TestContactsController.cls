@@ -31,7 +31,9 @@ public with sharing class TestContactsController {
         
         Test.setFixedSearchResults(fixedSearchResults);
 
+        Test.startTest();
         List<Contact> contacts = ContactsController.getContacts(LAST_NAME, 1);
+        Test.stopTest();
 
         System.assertEquals(3, contacts.size());
     }
@@ -60,5 +62,17 @@ public with sharing class TestContactsController {
 
         List<Contact> contacts = [SELECT Id FROM Contact WHERE Name = :LAST_NAME];
         System.assertEquals(1, contacts.size());
+    }
+
+    @isTest
+    public static void testGetAccounts() {
+        Account a = new Account(Name='testAccount');
+        insert a;
+
+        Test.startTest();
+        List<Account> accs = ContactsController.getAccounts();
+        Test.stopTest();
+
+        System.assertEquals(1, accs.size());
     }
 }
